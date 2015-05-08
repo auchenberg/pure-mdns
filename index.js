@@ -10,18 +10,17 @@ module.exports = function (opts) {
   }
 
   var dns = mdns()
-  var services = {}
-
-  var that = new events.EventEmitter()
+  var that = function() {};
 
   that.announce = function (type, port) {
     console.log('TODO')
   }
 
   that.discover = function (type) {
-    var browser = new events.EventEmitter()
     var browserInterval, cleanerInterval
-
+    var browser = new events.EventEmitter()
+    browser.services = {};
+  
     var serviceUp = function (service) {
       if (!service || !service.host || service.emitted) return
       service.emitted = true
@@ -30,7 +29,7 @@ module.exports = function (opts) {
 
     var serviceDown = function (service, key) {
       browser.emit('serviceDown', service)
-      delete services[key]
+      delete browser.services[key]
     }
 
     var query = function () {
@@ -40,8 +39,8 @@ module.exports = function (opts) {
 
     var cleaner = function () {
       var clean = function () {
-        Object.keys(services).forEach(function (key) {
-          var service = services[key]
+        Object.keys(browser.services).forEach(function (key) {
+          var service = browser.services[key]
           if (Date.now() - service.lastSeen > opts.interval) {
             serviceDown(service, key)
           }
@@ -63,8 +62,8 @@ module.exports = function (opts) {
 
         if (a.type === 'SRV') { // Extract name and port from SRV record
           name = a.data.target
-          if (!services[name]) {
-            services[name] = {
+          if (!browser.services[name]) {
+            browser.services[name] = {
               name: name,
               port: a.data.port,
               type: type,
@@ -73,15 +72,15 @@ module.exports = function (opts) {
           }
 
           // Update last seen
-          services[name].lastSeen = Date.now()
+          browser.services[name].lastSeen = Date.now()
         }
 
         if (a.type === 'A') { // Extract host from A record
           name = a.name.replace('.' + type, '')
 
-          if (services[name] && !services[name].host) {
-            services[name].host = a.data
-            serviceUp(services[name])
+          if (browser.services[name] && !browser.services[name].host) {
+            browser.services[name].host = a.data
+            serviceUp(browser.services[name])
           }
         }
       }
