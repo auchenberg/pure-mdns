@@ -1,0 +1,26 @@
+{
+  "name": "pure-mdns",
+  "version": "1.0.0",
+  "description": "multicast DNS in pure JavaScript",
+  "main": "index.js",
+  "dependencies": {
+    "debug": "^2.1.3",
+    "multicast-dns": "^2.0.0",
+  },
+  "devDependencies": {
+    "standard": "^3.2.0"
+  },
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auchenberg/pure-mdns.git"
+  },
+  "author": "Kenneth Auchenberg (@auchenberg)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/auchenberg/pure-mdns/issues"
+  },
+  "homepage": "https://github.com/auchenberg/pure-mdns"
+}
