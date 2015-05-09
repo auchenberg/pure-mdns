@@ -1,6 +1,6 @@
-var mdns = require('./index')()
+var mdns = require('../index')()
 
-var browser = mdns.discover('_smb._tcp.local')
+var browser = mdns.discover('_airplay._tcp.local')
 
 browser.start()
 
